@@ -20,7 +20,13 @@ app.get("/", (req: Request, res: Response) => {
 });
 app.get("/create", (req: Request, res: Response) => {
   call = client.video.call("default", "default_test_call");
-  call.create({ data: { created_by_id: "john" } });
+  call.create({
+    ring: true,
+    data: {
+      created_by_id: "api",
+      members: [{ user_id: "epic", role: "admin" }],
+    },
+  });
   res.send("call created");
 });
 app.get("/stop", (req: Request, res: Response) => {
