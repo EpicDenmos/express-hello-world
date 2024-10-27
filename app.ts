@@ -18,8 +18,8 @@ let call: StreamCall;
 app.get("/", (req: Request, res: Response) => {
   res.type("html").send("Hello");
 });
-app.get("/create", (req: Request, res: Response) => {
-  call = client.video.call("default", "default_test_call");
+app.get("/create/:callId", (req: Request, res: Response) => {
+  call = client.video.call("default", req.params.callId);
   call.create({
     ring: true,
     data: {
@@ -29,9 +29,15 @@ app.get("/create", (req: Request, res: Response) => {
   });
   res.send("call created");
 });
-app.get("/stop", (req: Request, res: Response) => {
-  call.end();
+app.get("/stop", async (req: Request, res: Response) => {
+  await call.end();
   res.send("call ended");
+});
+
+app.use(express.json());
+app.post("/webhooks", (req: Request, res: Response) => {
+  console.log(req.body);
+  res.status(200).send({});
 });
 
 const server = app.listen(port, () =>
